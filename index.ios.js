@@ -27,9 +27,9 @@ export default class morningRoute extends Component {
             style={styles.container}
             initialRoute={{id: 'first'}}
             renderScene={this.navigatorRenderScene}
-            configureScene={(route, routeStack) => {
-                Navigator.SceneConfigs.FloatFromBottom
-            }}
+            // configureScene={(route, routeStack) => {
+            //     Navigator.SceneConfigs.FloatFromBottom
+            // }} TODO: unbreak this
         />
 
         )
