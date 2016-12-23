@@ -6,7 +6,7 @@ import {
   PixelRatio
 } from 'react-native';
 
-export default class morningRoute extends Component {
+export default class FirstTouch extends Component {
     static get defaultProps() { return { title: 'FirstTouch' } }
 
     componentDidMount() {

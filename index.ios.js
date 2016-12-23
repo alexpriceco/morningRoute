@@ -41,7 +41,7 @@ export default class morningRoute extends Component {
             case 'first':
                 return (<FirstTouch navigator={navigator} title="first"/>);
             case 'second':
-                return (<AddRoute navigator={navigator} title="second" />);
+                return (<AddRoute navigator={navigator} currentStep='1' buttonText='Next' title="second" />);
         }
     }
 
