@@ -1,0 +1,3 @@
+rootProject.name = 'morningRoute'
+
+include ':app'
