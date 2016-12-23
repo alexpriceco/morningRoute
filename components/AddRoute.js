@@ -6,15 +6,42 @@ import {
   PixelRatio,
   TouchableHighlight
 } from 'react-native';
+import Input from './Input'
 
 export default class AddRoute extends Component {
     static get defaultProps() { return { title: 'AddRoute' } }
 
     _animationHandler(currStep) {
         console.log(currStep)
+        // Incremenet currStep; if it's not the fourth step, then
+            // Slide out old Input, slide in new Input
+            // assign filled to old indicator, active to new indicator
+        // else call Navigator to go to dashboard
     }
 
     render() {
+
+        let content;
+        if (this.props.isNew) {
+            content = (
+                <View>
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                    {/* <Preview></Preview> */}
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                </View>
+            )
+        } else {
+            content = (
+                <View>
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                    <Input placeholder='some placeholder' setText='somecallback'>This is the prompt</Input>
+                </View>
+            )
+        }
+
         return (
             <View style={styles.container}>
 
@@ -23,7 +50,7 @@ export default class AddRoute extends Component {
                         Get updates on traffic conditions, and never be late to work again.
                     </Text>
 
-                    {/* Input elements goes here */}
+                    { content }
                 </View>
 
                 <View style={styles.navigation}>
