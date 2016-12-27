@@ -7,7 +7,7 @@ import {
   TouchableHighlight,
   DatePickerIOS,
   Dimensions,
-  Easing
+  Animated
 } from 'react-native';
 import Input from './Input'
 
@@ -56,16 +56,17 @@ export default class AddRoute extends Component {
         }
     }
 
+    // Handles animation and updates for the dot indicators
     _setIndicatorState() {
-        console.log('asdf')
-
         let indicator =  {
-            transition: 'all 100ms cubic-bezier(0.420, 0.000, 0.580, 1.000)',
             width: 8,
             height: 8,
             margin: 6,
             borderRadius: 100,
+            borderWidth: 2,
+
             backgroundColor: '#CCCCCC',
+            borderColor: '#CCCCCC',
         }
 
         let indicatorActive = {
@@ -73,9 +74,10 @@ export default class AddRoute extends Component {
             height: 8,
             margin: 6,
             borderRadius: 100,
+            borderWidth: 2,
+
             backgroundColor: '#FFFFFF',
             borderColor: '#2E80ED',
-            borderWidth: 2,
         }
 
         let indicatorFilled = {
@@ -83,9 +85,14 @@ export default class AddRoute extends Component {
             height: 8,
             margin: 6,
             borderRadius: 100,
+            borderWidth: 2,
+
             backgroundColor: '#2E80ED',
+            borderColor: '#2E80ED',
         }
 
+        // The best way we could find to dynamically update the indicator styles
+        // based on the currentStep value...
         var keyCurrent = 'indicator' + (this.state.currentStep)
         var valCurrent = indicatorActive
         var objCurrent  = {}
@@ -97,17 +104,6 @@ export default class AddRoute extends Component {
         var objPrevious  = {}
         objPrevious[keyPrevious] = valPrevious
         this.setState(objPrevious)
-
-        // let asdf = {'indicator' + (this.state.currentStep - 1): indicatorFilled}
-        // let qwerty = {'indicator' + this.state.currentStep: indicatorActive}
-        //
-        // this.setState({
-        //     asdf,
-        //     qwerty
-        // })
-
-        console.log(this.state)
-
     }
 
     _animationHandler() {
@@ -115,10 +111,10 @@ export default class AddRoute extends Component {
         this.state.currentStep++
         this._setIndicatorState()
 
-        // Incremenet currStep; if it's not the fourth step, then
-            // Slide out old Input, slide in new Input
-            // assign filled to old indicator, active to new indicator
-        // else call Navigator to go to dashboard
+        // Increment currStep ; if it's not the fourth step, then 👍
+            // Slide out old Input, slide in new Input 👎
+            // assign filled to old indicator, active to new indicator 👍
+        // else call Navigator to go to dashboard 👍
     }
 
     render() {
@@ -131,7 +127,9 @@ export default class AddRoute extends Component {
 
                     <Text style={styles.text}>When do you need to be there?</Text>
                     <DatePickerIOS date={this.state.inputsWhen} mode='time' minuteInterval={15} onDateChange={(banana) => this.setState({inputsWhen: banana})} />
-                    {/* <Preview></Preview> */}
+                    {/* <Preview></Preview> TODO: Build the preview component,
+                        and pass in target address, and arrival time; will need
+                        to hit the API. */}
                     <Input placeholder='1234 Anydrive Road' setText={(text) => this.setState({inputsFrom: text})}>Where do you leave from?</Input>
                 </View>
             )
@@ -186,9 +184,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    navigation: {
-        // flexGrow: 2
-    },
     bold: {
         fontSize: 20,
         textAlign: 'left',
@@ -204,10 +199,7 @@ const styles = StyleSheet.create({
     },
     button: {
         padding: 20,
-        backgroundColor: '#2E80ED',
-        // position: 'absolute',
-        // bottom: 0,
-        // flexGrow: 1
+        backgroundColor: '#2E80ED'
     },
     buttonText: {
         textAlign: 'center',
