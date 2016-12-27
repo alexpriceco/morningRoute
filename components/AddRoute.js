@@ -22,6 +22,12 @@ export default class AddRoute extends Component {
             inputsPreview: '',
             inputsFrom: '',
             inputsName: '',
+            inputs: {
+              to: '',
+              from: '',
+              when: new Date(new Date().setMinutes(0)),
+              name: ''
+            },
             currentStep: 1,
             indicator1: {
                 width: 8,
@@ -60,7 +66,6 @@ export default class AddRoute extends Component {
         console.log('asdf')
 
         let indicator =  {
-            transition: 'all 100ms cubic-bezier(0.420, 0.000, 0.580, 1.000)',
             width: 8,
             height: 8,
             margin: 6,
@@ -114,6 +119,24 @@ export default class AddRoute extends Component {
         console.log(this.state.currentStep)
         this.state.currentStep++
         this._setIndicatorState()
+
+        if (this.state.currentStep == 4) {
+
+          this.setState({
+            inputs: {
+              to: this.state.inputsTo,
+              from: this.state.inputsFrom,
+              when: this.state.inputsWhen,
+              name: this.state.inputsName
+            }
+          })
+
+          try {
+            await AsyncStorage.setItem('@Routes:initial', this.state.inputs);
+          } catch (error) {
+            // Error saving data
+          }
+        }
 
         // Incremenet currStep; if it's not the fourth step, then
             // Slide out old Input, slide in new Input

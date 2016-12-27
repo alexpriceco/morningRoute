@@ -19,7 +19,27 @@ import FirstTouch from './components/FirstTouch.js'
 import AddRoute from './components/AddRoute.js'
 
 export default class morningRoute extends Component {
-    _isFirstUse() { return true }
+  constructor() {
+    super()
+    this.state = {
+      routes: {}
+    }
+  }
+
+  _isFirstUse() {
+      try {
+        const value = await AsyncStorage.getItem('@Routes');
+        if (value !== null){
+          // We have data!!
+          this.setState({routes: value})
+        } else {
+          return true
+        }
+      } catch (error) {
+        console.warn(error)
+      }
+
+  }
 
     render() {
         return (
@@ -43,7 +63,10 @@ export default class morningRoute extends Component {
             case 'second':
                 return (<AddRoute navigator={navigator} currentStep='1' buttonText='Next' isNew='true' title="second" />)
             case 'third':
-                return (<AddRoute navigator={navigator} currentStep='1' buttonText='Next' isNew='false' title="second" />)
+                return (<AddRoute navigator={navigator} currentStep='1' buttonText='Next' isNew='false' title="third" />)
+            case 'fourth':
+                return (<Dashboard navigator={navigator}
+                title='fourth' routes={this.state.routes}/>)
         }
     }
 
