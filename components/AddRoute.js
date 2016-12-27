@@ -7,7 +7,8 @@ import {
   TouchableHighlight,
   DatePickerIOS,
   Dimensions,
-  Animated
+  Animated,
+  AsyncStorage
 } from 'react-native';
 import Input from './Input'
 
@@ -112,7 +113,7 @@ export default class AddRoute extends Component {
         this.setState(objPrevious)
     }
 
-    _animationHandler() {
+    async _animationHandler() {
         console.log(this.state.currentStep)
         this.state.currentStep++
         this._setIndicatorState()

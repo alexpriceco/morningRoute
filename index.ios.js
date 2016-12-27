@@ -12,7 +12,8 @@ import {
   View,
   PixelRatio,
   Navigator,
-  TouchableHighlight
+  TouchableHighlight,
+  AsyncStorage
 } from 'react-native'
 
 import FirstTouch from './components/FirstTouch.js'
@@ -26,7 +27,7 @@ export default class morningRoute extends Component {
     }
   }
 
-  _isFirstUse() {
+  async _isFirstUse() {
       try {
         const value = await AsyncStorage.getItem('@Routes');
         if (value !== null){
