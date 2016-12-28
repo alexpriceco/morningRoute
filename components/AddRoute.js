@@ -29,60 +29,58 @@ export default class AddRoute extends Component {
                 when: new Date(new Date().setMinutes(0)),
                 name: ''
             },
-            currentStep: 1,
-            indicator2: {
-                status: new Animated.Value(0),
-                backgroundColor: 'rgb(204,204,204)',
-                borderColor: 'rgb(204,204,204)',
-            },
-            indicator3: {
-                status: new Animated.Value(0),
-                backgroundColor: 'rgb(204,204,204)',
-                borderColor: 'rgb(204,204,204)',
-            },
-            indicator4: {
-                status: new Animated.Value(0),
-                backgroundColor: 'rgb(204,204,204)',
-                borderColor: 'rgb(204,204,204)',
-            },
-            indicator1: {}
+            currentStep: new Animated.Value(1),
+            indicator1: {},
+            indicator2: {},
+            indicator3: {},
+            indicator4: {}
         },
-        this.state.indicator1.status = new Animated.Value(50),
-        this.state.indicator1.backgroundColor = this.state.indicator1.status.interpolate({
-            inputRange: [0, 50, 100],
-            outputRange: ['rgb(255,255,255)', 'rgb(255,255,255)', 'rgb(46,128,237)']
+
+        //indicator1
+        this.state.indicator1.backgroundColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(255,255,255)', 'rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
         }),
-        this.state.indicator1.borderColor = 'rgb(46,128,237)'
+        this.state.indicator1.borderColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+        }),
+
+        // indicator2
+        this.state.indicator2.backgroundColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(204,204,204)', 'rgb(255,255,255)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+        }),
+        this.state.indicator2.borderColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(204,204,204)', 'rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+        }),
+
+        // indicator3
+        this.state.indicator3.backgroundColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(255,255,255)', 'rgb(46, 128,237)']
+        }),
+        this.state.indicator3.borderColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+        }),
+
+        // indicator4
+        this.state.indicator4.backgroundColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(255,255,255)']
+        }),
+        this.state.indicator4.borderColor = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(46,128,237)']
+        })
     }
 
     // Handles animation and updates for the dot indicators
     _setIndicatorState() {
 
-        Animated.timing(this.state.indicator1.status, {
-            toValue: 100,
-            duration: 300
-        }).start(() => {
-            console.log('Done animating: ', this.state.indicator1.status)
-        })
 
-
-
-        // this.colorValue = new Animated.Value(0)
-        //
-        // colorChange() {
-        //     this.colorValue.setValue(0)
-        //     Animated.timing(this.colorValue, {
-        //         toValue: 100,
-        //         duration: 5000
-        //     }).start(() => {
-        //         this.colorChange()
-        //     })
-        // }
-        //
-        // const colorAnimation = this.colorValue.interpolate({
-        //     inputRange: [0, 50, 100],
-        //     outputRange: ['yellow', 'orange', 'red']
-        // })
 
         // The best way we could find to dynamically update the indicator styles
         // based on the currentStep value...
@@ -100,33 +98,32 @@ export default class AddRoute extends Component {
     }
 
     async _animationHandler() {
-        console.log(this.state.currentStep)
-        this.state.currentStep++
-        this._setIndicatorState()
 
-        if (this.state.currentStep == 4) {
+        if (this.state.currentStep._value == 4) {
+            this.setState({
+                inputs: {
+                    to: this.state.inputsTo,
+                    from: this.state.inputsFrom,
+                    when: this.state.inputsWhen,
+                    name: this.state.inputsName
+                }
+            })
 
-          this.setState({
-            inputs: {
-              to: this.state.inputsTo,
-              from: this.state.inputsFrom,
-              when: this.state.inputsWhen,
-              name: this.state.inputsName
+            try {
+                await AsyncStorage.setItem('@Routes:initial', this.state.inputs)
+            } catch (error) {
+                console.log(error) // TODO: This should probably be more robust
             }
-          })
+      } else {
+          let nextVal = this.state.currentStep._value + 1
+          Animated.timing(this.state.currentStep, {
+              toValue: nextVal,
+              duration: 200
+          }).start(() => { this.state.currentStep._value = nextVal })
 
-          try {
-            await AsyncStorage.setItem('@Routes:initial', this.state.inputs);
-          } catch (error) {
-            // Error saving data
-          }
-        }
-
-        // Incremenet currStep; if it's not the fourth step, then
-            // Slide out old Input, slide in new Input
-            // assign filled to old indicator, active to new indicator
-        // else call Navigator to go to dashboard
-
+          // TODO: Need to animate steps, and add conditional to prevent empty
+          // submissions.
+      }
     }
 
     render() {
