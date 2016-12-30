@@ -9,7 +9,7 @@ import {
   Dimensions,
   Animated,
   AsyncStorage
-} from 'react-native';
+} from 'react-native'
 import Input from './Input'
 
 export default class AddRoute extends Component {
@@ -77,32 +77,12 @@ export default class AddRoute extends Component {
         })
     }
 
-    // Handles animation and updates for the dot indicators
-    _setIndicatorState() {
-
-
-
-        // The best way we could find to dynamically update the indicator styles
-        // based on the currentStep value...
-        // var keyCurrent = 'indicator' + (this.state.currentStep)
-        // var valCurrent = indicatorActive
-        // var objCurrent  = {}
-        // objCurrent[keyCurrent] = valCurrent
-        // this.setState(objCurrent)
-        //
-        // var keyPrevious = 'indicator' + (this.state.currentStep - 1)
-        // var valPrevious = indicatorFilled
-        // var objPrevious  = {}
-        // objPrevious[keyPrevious] = valPrevious
-        // this.setState(objPrevious)
-    }
-
     async _animationHandler() {
 
         if (this.state.currentStep._value == 4) {
             this.setState({
                 inputs: {
-                    to: this.state.inputsTo,
+                    to:   this.state.inputsTo,
                     from: this.state.inputsFrom,
                     when: this.state.inputsWhen,
                     name: this.state.inputsName
@@ -114,16 +94,17 @@ export default class AddRoute extends Component {
             } catch (error) {
                 console.log(error) // TODO: This should probably be more robust
             }
-      } else {
-          let nextVal = this.state.currentStep._value + 1
-          Animated.timing(this.state.currentStep, {
-              toValue: nextVal,
-              duration: 200
-          }).start(() => { this.state.currentStep._value = nextVal })
-
-          // TODO: Need to animate steps, and add conditional to prevent empty
-          // submissions.
-      }
+        } else {
+            if (true) { // select input this.state.currentStep._value, determine if input!=null
+                let nextVal = this.state.currentStep._value + 1
+                Animated.timing(this.state.currentStep, {
+                    toValue: nextVal,
+                    duration: 200
+                }).start(() => { this.state.currentStep._value = nextVal })
+            } else {
+              // shake the input box to indicate the user should actually fill it
+            }
+        }
     }
 
     render() {
