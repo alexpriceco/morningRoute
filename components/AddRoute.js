@@ -49,31 +49,31 @@ export default class AddRoute extends Component {
         //indicator1
         this.state.indicator1.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [white, blu, blu, blu]
+            outputRange: [white, blue50, blue50, blue50]
         }),
         this.state.indicator1.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [blu, blu, blu, blu]
+            outputRange: [blue50, blue50, blue50, blue50]
         }),
 
         // indicator2
         this.state.indicator2.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [grey, white, blu, blu]
+            outputRange: [grey, white, blue50, blue50]
         }),
         this.state.indicator2.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [grey, blu, blu, blu]
+            outputRange: [grey, blue50, blue50, blue50]
         }),
 
         // indicator3
         this.state.indicator3.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [grey, grey, white, blu]
+            outputRange: [grey, grey, white, blue50]
         }),
         this.state.indicator3.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [grey, grey, blu, blu]
+            outputRange: [grey, grey, blue50, blue50]
         }),
 
         // indicator4
@@ -83,8 +83,31 @@ export default class AddRoute extends Component {
         }),
         this.state.indicator4.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: [grey, grey, grey, blu]
+            outputRange: [grey, grey, grey, blue50]
         })
+    }
+
+    _getPreviewRoute() {
+      let query = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.start}&destination=${this.state.end}&region=us&departure_time=${this.state.time}&traffic_model&key=AIzaSyB3xsLMFn2XoZfmywOnsWn8tf0Ffvw7FF0`
+      return fetch(query)
+        .then((response) => response.json())
+        .then((result) => {
+          let summary = result.routes[0].summary;
+          let driveTime = result.routes[0].legs[0].duration_in_traffic.text;
+          console.log(summary, driveTime);
+
+          // If drive is hours long rerun getroute + city name
+          if (summary.indexOf('hours') > -1) {
+            // Only austin right now, implement user location
+            getRoute(f, `${start},+Austin`, end)
+          } else if (f) {
+            // check if user is scheduling or calling current route overview
+            setNotification(f, summary, driveTime)
+          } else {
+            let both = `${summary} ${driveTime}`
+            return both
+          }
+      })
     }
 
     async _animationHandler() {
@@ -110,7 +133,7 @@ export default class AddRoute extends Component {
                 let nextVal = this.state.currentStep._value + 1
                 Animated.timing(this.state.currentStep, {
                     toValue: nextVal,
-                    duration: 200
+                    duration: 400
                 }).start(() => { this.state.currentStep._value = nextVal })
             } else {
               // shake the input box to indicate the user should actually fill it
