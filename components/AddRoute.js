@@ -13,67 +13,76 @@ import {
 import Input from './Input'
 
 export default class AddRoute extends Component {
-    static get defaultProps() { return { title: 'AddRoute' } }
+    static get defaultProps() { return {
+      title: 'AddRoute'
+    } }
 
     constructor(props) {
         super(props)
         this.state = {
+            date: new Date,
+            hours: 0,
+            minutes: 0,
             inputsTo: '',
-            inputsWhen: new Date(new Date().setMinutes(0)),
+            inputsWhen: new Date,
             inputsPreview: '',
             inputsFrom: '',
             inputsName: '',
             inputs: {
-                to: '',
-                from: '',
-                when: new Date(new Date().setMinutes(0)),
-                name: ''
+                to: 'a',
+                from: 'a',
+                when: new Date,
+                name: 'a'
             },
             currentStep: new Animated.Value(1),
             indicator1: {},
             indicator2: {},
             indicator3: {},
             indicator4: {}
-        },
+        }
+
+        const blu = 'rgb(46,128,237)'
+        const grey = 'rgb(204,204,204)'
+        const white = 'rgb(255,255,255)'
 
         //indicator1
         this.state.indicator1.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(255,255,255)', 'rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+            outputRange: [white, blu, blu, blu]
         }),
         this.state.indicator1.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+            outputRange: [blu, blu, blu, blu]
         }),
 
         // indicator2
         this.state.indicator2.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(204,204,204)', 'rgb(255,255,255)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+            outputRange: [grey, white, blu, blu]
         }),
         this.state.indicator2.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(204,204,204)', 'rgb(46, 128,237)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+            outputRange: [grey, blu, blu, blu]
         }),
 
         // indicator3
         this.state.indicator3.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(255,255,255)', 'rgb(46, 128,237)']
+            outputRange: [grey, grey, white, blu]
         }),
         this.state.indicator3.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(46, 128,237)', 'rgb(46, 128,237)']
+            outputRange: [grey, grey, blu, blu]
         }),
 
         // indicator4
         this.state.indicator4.backgroundColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(255,255,255)']
+            outputRange: [grey, grey, grey, white]
         }),
         this.state.indicator4.borderColor = this.state.currentStep.interpolate({
             inputRange:  [1, 2, 3, 4],
-            outputRange: ['rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(204,204,204)', 'rgb(46,128,237)']
+            outputRange: [grey, grey, grey, blu]
         })
     }
 
@@ -84,13 +93,14 @@ export default class AddRoute extends Component {
                 inputs: {
                     to:   this.state.inputsTo,
                     from: this.state.inputsFrom,
-                    when: this.state.inputsWhen,
+                    // when: this.state.inputsWhen,
                     name: this.state.inputsName
                 }
             })
 
             try {
-                await AsyncStorage.setItem('@Routes:initial', this.state.inputs)
+                console.log(this.state.inputs);
+                await AsyncStorage.setItem('@Routes:initial', this.state.inputs.to)
             } catch (error) {
                 console.log(error) // TODO: This should probably be more robust
             }
@@ -210,7 +220,7 @@ const styles = StyleSheet.create({
         margin: 6,
         borderRadius: 100,
         borderWidth: 2,
-        backgroundColor: 'rgb(255,255,255)',
+        backgroundColor: '#FFF',
         borderColor: 'rgb(204,204,204)',
     },
     button: {
@@ -220,7 +230,7 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         fontSize: 20,
-        color: '#FFFFFF'
+        color: '#FFF'
     },
     inputsWrapper: {
         flexWrap: 'nowrap',
