@@ -40,7 +40,7 @@ export default class AddRoute extends Component {
             indicator3: {},
             indicator4: {},
             inputsWrapper: { marginLeft: 0 },
-            buttonText: {}
+            buttonText: "Next 👍"
         }
 
         const grey90 = 'rgb(35,35,35)'
@@ -92,11 +92,6 @@ export default class AddRoute extends Component {
             inputRange:  [1, 2, 3, 4],
             outputRange: [0, (-Dimensions.get('window').width), (-2*(Dimensions.get('window').width)), (-3*(Dimensions.get('window').width))]
         })
-
-        this.state.buttonText = this.state.currentStep.interpolate({
-            inputRange:  [1, 2, 3, 4],
-            outputRange: ["Next <Emoji name=\"coffee\"/>", "Looking good.", "Cool!", "Onward!"]
-        })
     }
 
     _getPreviewRoute() {
@@ -124,6 +119,18 @@ export default class AddRoute extends Component {
     }
 
     async _animationHandler() {
+
+        switch (this.state.currentStep._value) {
+            case 1:
+                this.setState({buttonText: "Looking good 👌" })
+                break
+            case 2:
+                this.setState({buttonText: "Cool 😎" })
+                break
+            case 3:
+                this.setState({buttonText: "Onward! 🙌" })
+                break
+        }
 
         if (this.state.currentStep._value == 4) {
             this.setState({
