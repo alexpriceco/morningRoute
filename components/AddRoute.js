@@ -39,7 +39,8 @@ export default class AddRoute extends Component {
             indicator2: {},
             indicator3: {},
             indicator4: {},
-            inputsWrapper: { marginLeft: 0 }
+            inputsWrapper: { marginLeft: 0 },
+            buttonText: {}
         }
 
         const grey90 = 'rgb(35,35,35)'
@@ -91,6 +92,11 @@ export default class AddRoute extends Component {
             inputRange:  [1, 2, 3, 4],
             outputRange: [0, (-Dimensions.get('window').width), (-2*(Dimensions.get('window').width)), (-3*(Dimensions.get('window').width))]
         })
+
+        this.state.buttonText = this.state.currentStep.interpolate({
+            inputRange:  [1, 2, 3, 4],
+            outputRange: ["Next <Emoji name=\"coffee\"/>", "Looking good.", "Cool!", "Onward!"]
+        })
     }
 
     async _animationHandler() {
@@ -106,8 +112,11 @@ export default class AddRoute extends Component {
             })
 
             try {
-                console.log(this.state.inputs);
+                console.log(this.state.inputs)
                 await AsyncStorage.setItem('@Routes:initial', this.state.inputs.to)
+                console.log( await AsyncStorage.getItem('@Routes:initial'))
+                console.log('...with my woes!')
+                this.props.navigator.push({ id: 'dashboard' })
             } catch (error) {
                 console.log(error) // TODO: This should probably be more robust
             }
@@ -137,9 +146,11 @@ export default class AddRoute extends Component {
                         <DatePickerIOS style={styles.input} date={this.state.inputsWhen} mode='time' minuteInterval={15} onDateChange={(banana) => this.setState({inputsWhen: banana})} />
                     </View>
 
-                    <View style={styles.input}>
-                        <Text>UR MUM</Text>
-                        <View style={styles.previewElement}></View>
+                    <View style={styles.superInput}>
+                        <Text style={[styles.text, styles.input, {marginVertical: 32}]}>This is what you'll see at `TIME` in `PARTOFDAY` every workday.</Text>
+                        <View style={[styles.previewElement, styles.input]}>
+                            <Text style={styles.previewElementText}>UR MUM</Text>
+                        </View>
                     {/* <Preview></Preview> TODO: Build the preview component,
                         and pass in target address, and arrival time; will need
                         to hit the API. */}
@@ -198,7 +209,7 @@ export default class AddRoute extends Component {
                         onPress={this._animationHandler.bind(this)}
                         style={styles.button}
                     >
-                        <Text style={styles.buttonText}>{this.props.buttonText}</Text>
+                        <Text style={styles.buttonText}>{this.state.buttonText}</Text>
                     </TouchableHighlight>
                 </View>
             </View>
@@ -273,8 +284,15 @@ const styles = StyleSheet.create({
     },
     previewElement: {
         width: (Dimensions.get('window').width -60),
-        paddingVertical: 10,
+        padding: 30,
         backgroundColor: 'rgb(46,128,237)',
-        borderRadius: 8
+        borderRadius: 8,
+        shadowColor: 'rgb(35,35,35)',
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        shadowOffset: {width: 0, height: 8}
+    },
+    previewElementText: {
+        color: 'rgb(255,255,255)'
     }
 })

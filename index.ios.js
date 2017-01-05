@@ -17,6 +17,7 @@ import {
 } from 'react-native'
 
 import FirstTouch from './components/FirstTouch.js'
+import Dashboard from './components/Dashboard.js'
 import AddRoute from './components/AddRoute.js'
 
 export default class morningRoute extends Component {
@@ -57,46 +58,17 @@ export default class morningRoute extends Component {
     }
 
     navigatorRenderScene(route, navigator) {
-        _navigator = navigator;
         switch (route.id) {
             case 'first':
                 return (<FirstTouch navigator={navigator} title="first"/>)
             case 'second':
-                return (<AddRoute navigator={navigator} currentStep='1' buttonText='Next' isNew='true' title="second" />)
+                return (<AddRoute navigator={navigator} currentStep='1' isNew='true' title="second" />)
             case 'third':
-                return (<AddRoute navigator={navigator} currentStep='1' buttonText='Next' isNew='false' title="third" />)
-            case 'fourth':
-                return (<Dashboard navigator={navigator}
-                title='fourth' routes={this.state.routes}/>)
+                return (<AddRoute navigator={navigator} currentStep='1' isNew='false' title="third" />)
+            case 'dashboard':
+                return (<Dashboard navigator={navigator} title='fourth' />)
         }
     }
-
-    // render() {
-    //     const routes = [
-    //         {title: 'FirstTouch'},
-    //         {title: 'AddRoute'},
-    //     ]
-    //
-    //     return (
-    //         <Navigator
-    //             initialRoute={routes[0]}
-    //             renderScene={(route, navigator) =>
-    //                 <FirstTouch
-    //                     title={route.title}
-    //                     navigator={navigator}
-    //                     routes={routes}
-    //
-    //                     // Function to call to go back to the previous scene
-    //                     onBack={() => {
-    //                         if (route.index > 0) {
-    //                             navigator.pop();
-    //                         }
-    //                     }}
-    //                 />
-    //             }
-    //         />
-    //     )
-    // }
 }
 
 const styles = StyleSheet.create({})
