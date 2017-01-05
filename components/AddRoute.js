@@ -88,7 +88,8 @@ export default class AddRoute extends Component {
     }
 
     _getPreviewRoute() {
-      let query = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.start}&destination=${this.state.end}&region=us&departure_time=${this.state.time}&traffic_model&key=AIzaSyB3xsLMFn2XoZfmywOnsWn8tf0Ffvw7FF0`
+      let time = this.state.time.getTime() / 1000
+      let query = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.start}&destination=${this.state.end}&region=us&departure_time=${time}&traffic_model&key=AIzaSyB3xsLMFn2XoZfmywOnsWn8tf0Ffvw7FF0`
       return fetch(query)
         .then((response) => response.json())
         .then((result) => {
