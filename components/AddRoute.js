@@ -41,9 +41,10 @@ export default class AddRoute extends Component {
             indicator4: {}
         }
 
-        const blu = 'rgb(46,128,237)'
-        const grey = 'rgb(204,204,204)'
-        const white = 'rgb(255,255,255)'
+        const grey90 = 'rgb(35,35,35)'
+        const blue50 = 'rgb(46,128,237)'
+        const grey40 = 'rgb(204,204,204)'
+        const white  = 'rgb(255,255,255)'
 
         //indicator1
         this.state.indicator1.backgroundColor = this.state.currentStep.interpolate({
@@ -193,7 +194,7 @@ export default class AddRoute extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFF',
+        backgroundColor: white,
         flex: 1
     },
     content: {
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginVertical: 5,
         marginHorizontal: 30,
-        color: '#232323',
+        color: grey90,
         fontWeight: '600'
     },
     indicators: {
@@ -220,17 +221,17 @@ const styles = StyleSheet.create({
         margin: 6,
         borderRadius: 100,
         borderWidth: 2,
-        backgroundColor: '#FFF',
-        borderColor: 'rgb(204,204,204)',
+        backgroundColor: white,
+        borderColor: grey40,
     },
     button: {
         padding: 20,
-        backgroundColor: '#2E80ED'
+        backgroundColor: blue50
     },
     buttonText: {
         textAlign: 'center',
         fontSize: 20,
-        color: '#FFF'
+        color: white
     },
     inputsWrapper: {
         flexWrap: 'nowrap',
@@ -245,6 +246,6 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginVertical: 5,
         marginHorizontal: 30,
-        color: '#232323'
+        color: grey90
     }
 })
