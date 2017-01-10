@@ -23,17 +23,13 @@ export default class AddRoute extends Component {
             date: new Date,
             hours: 0,
             minutes: 0,
-            inputsTo: '',
-            inputsWhen: new Date,
-            inputsPreview: '',
-            inputsFrom: '',
-            inputsName: '',
-            inputs: {
-                to: 'a',
-                from: 'a',
-                when: new Date,
-                name: 'a'
-            },
+            to: '600 Congress Ave',
+            from: '5808 Miramonte Dr',
+            when: new Date,
+            routeName: '',
+            routeSummary: 'a',
+            notifTime: '',
+            driveTime: '',
             currentStep: new Animated.Value(1),
             indicator1: {},
             indicator2: {},
@@ -43,7 +39,7 @@ export default class AddRoute extends Component {
             buttonText: "Next 👍",
             buttonBackground: 'rgb(204,204,204)',
             buttonTextColor: 'rgb(124,124,124)',
-            buttonDisabled: true
+            buttonDisabled: true,
         }
 
         const grey90 = 'rgb(35,35,35)'
@@ -101,26 +97,21 @@ export default class AddRoute extends Component {
     }
 
     _getPreviewRoute() {
-      let time = this.state.time.getTime() / 1000
-      let query = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.start}&destination=${this.state.end}&region=us&departure_time=${time}&traffic_model&key=AIzaSyB3xsLMFn2XoZfmywOnsWn8tf0Ffvw7FF0`
-      return fetch(query)
-        .then((response) => response.json())
-        .then((result) => {
-          let summary = result.routes[0].summary;
-          let driveTime = result.routes[0].legs[0].duration_in_traffic.text;
-          console.log(summary, driveTime);
+      let time = Math.floor(this.state.when.getTime() / 1000) + 604800
+      let from = this.state.from.replace(/\s+/g, '+')
+      let to = this.state.to.replace(/\s+/g, '+')
+      let req = `https://maps.googleapis.com/maps/api/directions/json?origin=${from}&destination=${to}&region=us&departure_time=${time}&traffic_model&key=AIzaSyB3xsLMFn2XoZfmywOnsWn8tf0Ffvw7FF0`
+      return fetch(req).then((res) => res.json()).then((res) => {
+        console.log(res)
+        let routeSummary = res.routes[0].summary
+        let driveTime = res.routes[0].legs[0].duration_in_traffic.text
 
-          // If drive is hours long rerun getroute + city name
-          if (summary.indexOf('hours') > -1) {
-            // Only austin right now, implement user location
-            getRoute(f, `${start},+Austin`, end)
-          } else if (f) {
-            // check if user is scheduling or calling current route overview
-            setNotification(f, summary, driveTime)
-          } else {
-            let both = `${summary} ${driveTime}`
-            return both
-          }
+        let travelTimeInSeconds = res.routes[0].legs[0].duration_in_traffic.value
+        let tmpTime = new Date(this.state.when.getTime() - travelTimeInSeconds*1000)
+        let notifTime = tmpTime.getHours() + ':' + tmpTime.getMinutes()
+
+        this.setState({routeSummary, driveTime, notifTime})
+        return `${routeSummary} ${driveTime}`
       })
     }
 
@@ -128,9 +119,10 @@ export default class AddRoute extends Component {
       this.setState({buttonBackground: 'rgb(204,204,204)'})
       this.setState({buttonTextColor:  'rgb(124,124,124)'})
       this.setState({buttonDisabled: true})
+
       switch (this.state.currentStep._value) {
         case 1:
-          if (this.state.inputsTo.length > 0) {
+          if (this.state.to.length > 0) {
             this.setState({buttonBackground: 'rgb(46,128,237)'})
             this.setState({buttonTextColor:  'rgb(255,255,255)'})
             this.setState({buttonDisabled: false})
@@ -146,7 +138,7 @@ export default class AddRoute extends Component {
           this.setState({buttonDisabled: true})
           break
         case 3:
-          if (this.state.inputsFrom.length > 0) {
+          if (this.state.from.length > 0) {
             this.setState({buttonBackground: 'rgb(46,128,237)'})
             this.setState({buttonTextColor:  'rgb(255,255,255)'})
             this.setState({buttonDisabled: false})
@@ -175,25 +167,22 @@ export default class AddRoute extends Component {
                 this.setState({buttonText: "Onward! 🙌" })
                 break
             case 3:
-                this.setState({buttonText: "Cool 😎" })
+                this.setState({buttonText: "Cool 😎" }, () => this._getPreviewRoute())
                 break
         }
 
         if (this.state.currentStep._value == 4) {
-            this.setState({
-                inputs: {
-                    to:   this.state.inputsTo,
-                    from: this.state.inputsFrom,
-                    // when: this.state.inputsWhen,
-                    name: this.state.inputsName
-                }
-            })
+            // this.setState({
+            //     inputs: {
+            //         to:   this.state.to,
+            //         from: this.state.from,
+            //         // when: this.state.when,
+            //         name: this.state.inputsName
+            //     }
+            // })
 
             try {
-                console.log(this.state.inputs)
                 await AsyncStorage.setItem('@Routes:initial', this.state.inputs.to)
-                console.log( await AsyncStorage.getItem('@Routes:initial'))
-                console.log('...with my woes!')
                 this.props.navigator.push({ id: 'dashboard' })
             } catch (error) {
                 console.log(error) // TODO: This should probably be more robust
@@ -218,22 +207,22 @@ export default class AddRoute extends Component {
             content = (
                 <Animated.View style={[styles.inputsWrapper, {marginLeft: this.state.inputsWrapper.marginLeft}]}>
                     <Input style={styles.input} placeholder='1234 Anydrive Road' setText={(text) => {
-                      this.setState({inputsTo: text}, () => this._buttonHandler())
+                      this.setState({to: text}, () => this._buttonHandler())
                     }}>Where are you going?</Input>
 
                     <View style={styles.superInput}>
                         <Text style={[styles.text, styles.input]}>When do you need to be there?</Text>
-                        <DatePickerIOS style={styles.input} date={this.state.inputsWhen} mode='time' minuteInterval={15} onDateChange={(banana) => this.setState({inputsWhen: banana})} />
+                        <DatePickerIOS style={styles.input} date={this.state.when} mode='time' minuteInterval={15} onDateChange={(banana) => this.setState({when: banana}, () => console.log(this.state.when))} />
                     </View>
 
                     <Input style={styles.input} placeholder='1234 Anydrive Road' setText={(text) => {
-                      this.setState({inputsFrom: text}, () => this._buttonHandler())
+                      this.setState({from: text}, () => this._buttonHandler())
                     }}>Where do you leave from?</Input>
 
                     <View style={styles.superInput}>
-                        <Text style={[styles.text, styles.input, {marginVertical: 32}]}>This is what you'll see at `TIME` in `PARTOFDAY` every workday.</Text>
+                        <Text style={[styles.text, styles.input, {marginVertical: 32}]}>This is what you'll see at {this.state.notifTime} every workday.</Text>
                         <View style={[styles.previewElement, styles.input]}>
-                            <Text style={styles.previewElementText}>UR MUM</Text>
+                            <Text style={styles.previewElementText}>Leave in 15 minutes to arrive on time, taking {this.state.routeSummary}. Drive time is {this.state.driveTime}</Text>
                         </View>
                     {/* <Preview></Preview> TODO: Build the preview component,
                         and pass in target address, and arrival time; will need
