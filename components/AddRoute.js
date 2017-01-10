@@ -40,11 +40,17 @@ export default class AddRoute extends Component {
             indicator3: {},
             indicator4: {},
             inputsWrapper: { marginLeft: 0 },
-            buttonText: "Next 👍"
+            buttonText: "Next 👍",
+            buttonBackground: 'rgb(204,204,204)',
+            buttonTextColor: 'rgb(124,124,124)',
+            buttonDisabled: true
         }
 
         const grey90 = 'rgb(35,35,35)'
         const blue50 = 'rgb(46,128,237)'
+        const grey70 = 'rgb(124,124,124)'
+        const grey60 = 'rgb(150,150,150)'
+        const grey50 = 'rgb(173,173,173)'
         const grey40 = 'rgb(204,204,204)'
         const grey00 = 'rgb(255,255,255)'
 
@@ -118,17 +124,58 @@ export default class AddRoute extends Component {
       })
     }
 
+    _buttonHandler() {
+      this.setState({buttonBackground: 'rgb(204,204,204)'})
+      this.setState({buttonTextColor:  'rgb(124,124,124)'})
+      this.setState({buttonDisabled: true})
+      switch (this.state.currentStep._value) {
+        case 1:
+          if (this.state.inputsTo.length > 0) {
+            this.setState({buttonBackground: 'rgb(46,128,237)'})
+            this.setState({buttonTextColor:  'rgb(255,255,255)'})
+            this.setState({buttonDisabled: false})
+          } else {
+            this.setState({buttonBackground: 'rgb(204,204,204)'})
+            this.setState({buttonTextColor:  'rgb(124,124,124)'})
+            this.setState({buttonDisabled: true})
+          }
+          break
+        case 2:
+          this.setState({buttonBackground: 'rgb(204,204,204)'})
+          this.setState({buttonTextColor:  'rgb(124,124,124)'})
+          this.setState({buttonDisabled: true})
+          break
+        case 3:
+          if (this.state.inputsFrom.length > 0) {
+            this.setState({buttonBackground: 'rgb(46,128,237)'})
+            this.setState({buttonTextColor:  'rgb(255,255,255)'})
+            this.setState({buttonDisabled: false})
+          } else {
+            this.setState({buttonBackground: 'rgb(204,204,204)'})
+            this.setState({buttonTextColor:  'rgb(124,124,124)'})
+            this.setState({buttonDisabled: true})
+          }
+          break
+        case 4:
+          this.setState({buttonBackground: 'rgb(46,128,237)'})
+          this.setState({buttonTextColor:  'rgb(255,255,255)'})
+          this.setState({buttonDisabled: false})
+          break
+      }
+    }
+
     async _animationHandler() {
+        this._buttonHandler()
 
         switch (this.state.currentStep._value) {
             case 1:
                 this.setState({buttonText: "Looking good 👌" })
                 break
             case 2:
-                this.setState({buttonText: "Cool 😎" })
+                this.setState({buttonText: "Onward! 🙌" })
                 break
             case 3:
-                this.setState({buttonText: "Onward! 🙌" })
+                this.setState({buttonText: "Cool 😎" })
                 break
         }
 
@@ -170,12 +217,18 @@ export default class AddRoute extends Component {
         if (this.props.isNew) {
             content = (
                 <Animated.View style={[styles.inputsWrapper, {marginLeft: this.state.inputsWrapper.marginLeft}]}>
-                    <Input style={styles.input} placeholder='1234 Anydrive Road' setText={(text) => this.setState({inputsTo: text})}>Where are you going?</Input>
+                    <Input style={styles.input} placeholder='1234 Anydrive Road' setText={(text) => {
+                      this.setState({inputsTo: text}, () => this._buttonHandler())
+                    }}>Where are you going?</Input>
 
                     <View style={styles.superInput}>
                         <Text style={[styles.text, styles.input]}>When do you need to be there?</Text>
                         <DatePickerIOS style={styles.input} date={this.state.inputsWhen} mode='time' minuteInterval={15} onDateChange={(banana) => this.setState({inputsWhen: banana})} />
                     </View>
+
+                    <Input style={styles.input} placeholder='1234 Anydrive Road' setText={(text) => {
+                      this.setState({inputsFrom: text}, () => this._buttonHandler())
+                    }}>Where do you leave from?</Input>
 
                     <View style={styles.superInput}>
                         <Text style={[styles.text, styles.input, {marginVertical: 32}]}>This is what you'll see at `TIME` in `PARTOFDAY` every workday.</Text>
@@ -186,8 +239,6 @@ export default class AddRoute extends Component {
                         and pass in target address, and arrival time; will need
                         to hit the API. */}
                     </View>
-
-                    <Input style={styles.input} placeholder='1234 Anydrive Road' setText={(text) => this.setState({inputsFrom: text})}>Where do you leave from?</Input>
                 </Animated.View>
             )
         } else {
@@ -238,9 +289,10 @@ export default class AddRoute extends Component {
 
                     <TouchableHighlight
                         onPress={this._animationHandler.bind(this)}
-                        style={styles.button}
+                        style={[styles.button, {backgroundColor: this.state.buttonBackground}]}
+                        disabled={this.state.buttonDisabled}
                     >
-                        <Text style={styles.buttonText}>{this.state.buttonText}</Text>
+                        <Text style={[styles.buttonText, {color: this.state.buttonTextColor}]}>{this.state.buttonText}</Text>
                     </TouchableHighlight>
                 </View>
             </View>
